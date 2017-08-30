@@ -15,7 +15,7 @@ class CarData {
     createCar(car) {
         return new Promise(function (resolve, reject) {
             var con = databaseConnection.getConnection();
-            con.query("INSERT INTO `test`.`Car` (`id`, `name`, `color`) VALUES (NULL, 'Fiat', 'Geel');", function (err, result, fields) {
+            con.query("INSERT INTO CAR (`id`, `name`, `color`) VALUES (NULL, 'Fiat', 'Geel');", function (err, result, fields) {
                 if (err) reject(err);
                 var i;
                 var cars = [];
@@ -41,7 +41,7 @@ class CarData {
     getAllCars() {
         return new Promise(function (resolve, reject) {
             var con = databaseConnection.getConnection();
-            con.query("SELECT * FROM `test`.`Car`;", function (err, result, fields) {
+            con.query("SELECT * FROM CAR;", function (err, result, fields) {
                 if (err) reject(err);
                 var i;
                 var cars = [];
@@ -104,7 +104,7 @@ class CarData {
     removeCarById(id) {
         return new Promise(function (resolve, reject) {
             var con = databaseConnection.getConnection();
-            con.query("DELETE FROM `test`.`Car` WHERE `id`=?;", [id], function (err, result, fields) {
+            con.query("DELETE FROM CAR WHERE `id`=?;", [id], function (err, result, fields) {
                 if (err) reject(err);
                 var i;
                 var cars = [];
