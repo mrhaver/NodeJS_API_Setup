@@ -47,7 +47,12 @@ class CarData {
     static getById(id) {
         return new Promise(function (resolve, reject) {
             CarData.handleCarQuery("SELECT * FROM " + tableName + " WHERE id = ?;", [id]).then(function(result){
-                resolve(result);
+                if(result.length == 1){
+                    resolve(result[0]);
+                }
+                else{
+                    resolve(result);
+                }
             })
             .catch(function(result){
                 reject(result);

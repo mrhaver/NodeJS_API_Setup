@@ -6,7 +6,7 @@ var carData = new CarData();
 class CarAPI {
 
     constructor(app) {
-        this.baseUrl = BaseAPI.getUrl() + "/car";
+        this.baseUrl = BaseAPI.getUrl() + "/cars";
         this.app = app;
         this.publishEndPoints();
     }
@@ -23,7 +23,7 @@ class CarAPI {
      * 
      */
     createCar(){
-        this.app.post(this.baseUrl + '/post/createCar', function (req, res) {
+        this.app.post(this.baseUrl + '/create', function (req, res) {
             CarData.create().then(function (result) {
                 res.end(JSON.stringify(result));
             })
@@ -37,7 +37,7 @@ class CarAPI {
      * Read all cars from cardata
      */
     getAllCars() {
-        this.app.get(this.baseUrl + '/get/all', function (req, res) {
+        this.app.get(this.baseUrl + '', function (req, res) {
             CarData.getAll().then(function (result) {
                 res.end(JSON.stringify(result));
             })
@@ -48,7 +48,7 @@ class CarAPI {
      * Find car by Id
      */
     getCarById() {
-        this.app.get(this.baseUrl + '/get/byId/:id', function (req, res) {
+        this.app.get(this.baseUrl + '/:id', function (req, res) {
             CarData.getById(req.params.id).then(function (result) {
                 res.end(JSON.stringify(result));
             })
@@ -59,7 +59,7 @@ class CarAPI {
      * Update a car
      */
     updateCar(){
-        this.app.post(this.baseUrl + '/post/updateCar', function (req, res) {
+        this.app.put(this.baseUrl + '/post/updateCar', function (req, res) {
             CarData.update().then(function (result) {
                 res.end(JSON.stringify(result));
             })
@@ -70,7 +70,7 @@ class CarAPI {
      * Remove a car
      */
     removeCarById(){
-        this.app.post(this.baseUrl + '/post/removeCarById/:id', function (req, res) {
+        this.app.delete(this.baseUrl + '/post/removeCarById/:id', function (req, res) {
             CarData.removeById(req.params.id).then(function (result) {
                 res.end(JSON.stringify(result));
             })

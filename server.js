@@ -8,8 +8,10 @@ var CarAPI = require("./controllers/CarAPI.js");
 var BaseAPI = require("./controllers/BaseAPI.js");
 
 app.get('/helloWorld', function (req, res) {
+    res.header("Content-Type", "application/json");
     res.end("hello world");
 })
+
 
 var helloWorldAPI = new HelloWorldAPI(app);
 var carAPI = new CarAPI(app);
