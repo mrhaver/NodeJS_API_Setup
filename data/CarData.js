@@ -12,9 +12,10 @@ class CarData {
     /**
      * method to create a new car of class Car.js
      */
-    createCar(car){
+    createCar(car) {
         return new Promise(function (resolve, reject) {
             var con = databaseConnection.getConnection();
+
             con.query("INSERT INTO Car (`name`, `color`) VALUES ('hallo', 'blauw');", function (err, result, fields) {
                 if (err) reject(err);
                 var i;
@@ -75,7 +76,7 @@ class CarData {
     /**
      * method to update car
      */
-    updateCar(){
+    updateCar() {
         return new Promise(function (resolve, reject) {
             var con = databaseConnection.getConnection();
             con.query("UPDATE CAR SET `color`='oranje' WHERE `id`='12';", function (err, result, fields) {
@@ -95,7 +96,7 @@ class CarData {
     /**
      * Remove car by id
      */
-    removeCarById(id){
+    removeCarById(id) {
         return new Promise(function (resolve, reject) {
             var con = databaseConnection.getConnection();
             con.query("DELETE FROM `test`.`Car` WHERE `id`=?;", [id], function (err, result, fields) {

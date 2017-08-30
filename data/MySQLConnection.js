@@ -13,6 +13,13 @@ class MySQLConnection{
     }
 
     getConnection(){
+        con.connect(function (err) {
+            if (err) {
+                console.log("error at connecting to database");
+                throw err;
+            }
+            console.log("Connected to database");
+        });
         return con;
     }
 }
