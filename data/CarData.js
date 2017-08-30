@@ -43,7 +43,7 @@ class CarData {
     getAllCars() {
         return new Promise(function (resolve, reject) {
             var con = databaseConnection.getConnection();
-            con.query("SELECT * FROM CAR;", function (err, result, fields) {
+            con.query("SELECT * FROM `test`.`Car`;", function (err, result, fields) {
                 if (err) reject(err);
                 var i;
                 var cars = [];
