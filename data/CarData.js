@@ -16,16 +16,23 @@ class CarData {
         return new Promise(function (resolve, reject) {
             var con = databaseConnection.getConnection();
 
-            con.query("INSERT INTO Car (`name`, `color`) VALUES ('hallo', 'blauw');", function (err, result, fields) {
+            con.query("INSERT INTO `test`.`Car` (`id`, `name`, `color`) VALUES (NULL, 'Fiat', 'Geel');", function (err, result, fields) {
                 if (err) reject(err);
                 var i;
                 var cars = [];
-                for (i = 0; i < result.length; i++) {
-                    var car = new Car(result[i].id, result[i].name, result[i].color);
-                    cars.push(car);
+                if(result != null){
+                    for (i = 0; i < result.length; i++) {
+                        var car = new Car(result[i].id, result[i].name, result[i].color);
+                        cars.push(car);
+                    }
+                    console.log(cars);
+                    resolve(cars);
                 }
-                console.log(cars);
-                resolve(cars);
+                else{
+                    console.log("result is null");
+                    reject("result is null");
+                }
+                
             });
         })
     }
