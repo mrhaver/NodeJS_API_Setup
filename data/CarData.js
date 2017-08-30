@@ -15,7 +15,6 @@ class CarData {
     createCar(car) {
         return new Promise(function (resolve, reject) {
             var con = databaseConnection.getConnection();
-
             con.query("INSERT INTO `test`.`Car` (`id`, `name`, `color`) VALUES (NULL, 'Fiat', 'Geel');", function (err, result, fields) {
                 if (err) reject(err);
                 var i;
@@ -32,7 +31,6 @@ class CarData {
                     console.log("result is null");
                     reject("result is null");
                 }
-                
             });
         })
     }
