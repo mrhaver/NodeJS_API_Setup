@@ -1,6 +1,8 @@
 var CarData = require("./../data/CarData.js");
 var BaseAPI = require("./BaseAPI.js");
 
+var carData = new CarData();
+
 class CarAPI {
 
     constructor(app) {
@@ -10,21 +12,23 @@ class CarAPI {
     }
 
     publishEndPoints() {
+        this.createCar();
         this.getAllCars();
         this.getCarById();
-        this.createCar();
         this.updateCar();
         this.removeCarById();
     }
 
     /**
-     * Create a car
+     * 
      */
     createCar(){
         this.app.post(this.baseUrl + '/post/createCar', function (req, res) {
-            var carData = new CarData();
-            carData.createCar().then(function (result) {
+            CarData.create().then(function (result) {
                 res.end(JSON.stringify(result));
+            })
+            .catch(function(result){
+                res.end("mislukt");
             })
         })
     }
@@ -34,8 +38,7 @@ class CarAPI {
      */
     getAllCars() {
         this.app.get(this.baseUrl + '/get/all', function (req, res) {
-            var carData = new CarData();
-            carData.getAllCars().then(function (result) {
+            CarData.getAll().then(function (result) {
                 res.end(JSON.stringify(result));
             })
         })
@@ -46,32 +49,33 @@ class CarAPI {
      */
     getCarById() {
         this.app.get(this.baseUrl + '/get/byId/:id', function (req, res) {
-            var carData = new CarData();
-            carData.getCarById(req.params.id).then(function (result) {
+            CarData.getById(req.params.id).then(function (result) {
                 res.end(JSON.stringify(result));
             })
         })
     }
 
+    /**
+     * Update a car
+     */
     updateCar(){
         this.app.post(this.baseUrl + '/post/updateCar', function (req, res) {
-            var carData = new CarData();
-            carData.updateCar().then(function (result) {
+            CarData.update().then(function (result) {
                 res.end(JSON.stringify(result));
             })
         })
     }
 
+    /**
+     * Remove a car
+     */
     removeCarById(){
         this.app.post(this.baseUrl + '/post/removeCarById/:id', function (req, res) {
-            var carData = new CarData();
-            carData.removeCarById(req.params.id).then(function (result) {
+            CarData.removeById(req.params.id).then(function (result) {
                 res.end(JSON.stringify(result));
             })
         })
     }
-
-
 }
 
 module.exports = CarAPI;

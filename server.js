@@ -1,4 +1,5 @@
 var express = require('express');
+var mysql = require('mysql');
 var app = express();
 var portNumber = 8081;
 
@@ -20,5 +21,3 @@ var server = app.listen(portNumber, function () {
 
     console.log("Example app listening at http://%s:%s", host, port)
 })
-
-var mysql = require('mysql');
