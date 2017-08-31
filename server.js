@@ -1,7 +1,11 @@
 var express = require('express');
 var mysql = require('mysql');
-var app = express();
+var bodyParser = require('body-parser');
+
 var portNumber = 8081;
+var app = express();
+app.use(bodyParser.json()); 
+app.use(bodyParser.urlencoded({ extended: true })); 
 
 var HelloWorldAPI = require("./controllers/HelloWorldAPI.js");
 var CarAPI = require("./controllers/CarAPI.js");

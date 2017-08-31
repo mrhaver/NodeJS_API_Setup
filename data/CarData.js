@@ -12,18 +12,19 @@ class CarData {
     /**
      * Create a new car in the database
      * Create car object from parameter car
+     * If query is succes, resolve the created car
      * @param {*} car 
      */
     static create(car) {
-        return new Promise(function(resolve, reject){
-            CarData.handleCarQuery("INSERT INTO " + tableName + " (`id`, `name`, `color`) VALUES (NULL, 'Fiat', 'Geel');").then(function(result){
+        return new Promise(function (resolve, reject) {
+            CarData.handleCarQuery("INSERT INTO " + tableName + " (`id`, `name`, `color`) VALUES (NULL, ?, ?);", [car.name, car.color], "CREATE").then(function (result) {
                 resolve(result);
             })
-            .catch(function(result){
-                reject(result);
-            })
+                .catch(function (result) {
+                    reject(result);
+                })
         })
-        
+
     }
 
     /**
@@ -31,10 +32,9 @@ class CarData {
      */
     static getAll() {
         return new Promise(function (resolve, reject) {
-            CarData.handleCarQuery("SELECT * FROM " + tableName + ";").then(function(result){
+            CarData.handleCarQuery("SELECT * FROM " + tableName + ";", [], "GET").then(function (result) {
                 resolve(result);
-            })
-            .catch(function(result){
+            }).catch(function (result) {
                 reject(result);
             })
         })
@@ -46,15 +46,11 @@ class CarData {
      */
     static getById(id) {
         return new Promise(function (resolve, reject) {
-            CarData.handleCarQuery("SELECT * FROM " + tableName + " WHERE id = ?;", [id]).then(function(result){
-                if(result.length == 1){
+            CarData.handleCarQuery("SELECT * FROM " + tableName + " WHERE id = ?;", [id], "GET").then(function (result) {
+                if (result != null) {
                     resolve(result[0]);
                 }
-                else{
-                    resolve(result);
-                }
-            })
-            .catch(function(result){
+            }).catch(function (result) {
                 reject(result);
             })
         })
@@ -67,10 +63,9 @@ class CarData {
      */
     static update(car) {
         return new Promise(function (resolve, reject) {
-            CarData.handleCarQuery("UPDATE " + tableName + " SET `color`='geel' WHERE `id`='12';").then(function(result){
+            CarData.handleCarQuery("UPDATE " + tableName + " SET `name`=?, `color`=? WHERE `id`=?;", [car.name, car.color, car.id], "UPDATE").then(function (result) {
                 resolve(result);
-            })
-            .catch(function(result){
+            }).catch(function (result) {
                 reject(result);
             })
         })
@@ -81,10 +76,9 @@ class CarData {
      */
     static removeById(id) {
         return new Promise(function (resolve, reject) {
-            CarData.handleCarQuery("DELETE FROM " + tableName + " WHERE `id`=?;", [id]).then(function(result){
+            CarData.handleCarQuery("DELETE FROM " + tableName + " WHERE `id`=?;", [id], "DELETE").then(function (result) {
                 resolve(result);
-            })
-            .catch(function(result){
+            }).catch(function (result) {
                 reject(result);
             })
         })
@@ -94,32 +88,52 @@ class CarData {
      * Every query will be executed by this function
      * @param {*} query 
      */
-    static handleCarQuery(query, parameters){
+    static handleCarQuery(query, parameters, queryType) {
         console.log("CarData: Executing query: " + query + " with parameters " + parameters);
-        return new Promise(function (resolve, reject){
+        return new Promise(function (resolve, reject) {
             var con = databaseConnection.getConnection();
             con.query(query, parameters, function (err, result, fields) {
-                if (err){
+                if (err) {
                     console.log("CarData: query failed");
                     reject(err);
-                } 
-                var i;
-                var cars = [];
-                if(result != null){
+                    return;
+                }
+
+                if (result == null) {
+                    return;
+                }
+
+                if (queryType == "CREATE") {
+                    // return the created car
+                    var car = new Car(result.insertId, parameters[0], parameters[1]);
+                    resolve(car);
+                }
+
+                if (queryType == "GET") {
+                    // create list of cars
+                    var i;
+                    var cars = [];
                     for (i = 0; i < result.length; i++) {
                         var car = new Car(result[i].id, result[i].name, result[i].color);
                         cars.push(car);
                     }
                     resolve(cars);
                 }
-                else{
-                    console.log("CarData: result is null");
-                    reject("result is null");
+
+                if (queryType == "UPDATE") {
+                    resolve("car updated");
                 }
+
+                if (queryType == "DELETE") {
+                    resolve("car removed");
+                }
+
+
+
+                // this block for create queries
             });
         })
     }
-
 }
 
 module.exports = CarData;
