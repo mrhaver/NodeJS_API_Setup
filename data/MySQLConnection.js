@@ -4,7 +4,7 @@ var con = mysql.createConnection({
     host: "localhost",
     user: "root",
     password: "150196",
-    database: "test"
+    database: "Haver_Bedrijfsmode"
 });
 
 class MySQLConnection{

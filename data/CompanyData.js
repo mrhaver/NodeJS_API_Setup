@@ -1,38 +1,38 @@
-var Car = require("./../model/Car.js");
 var MySQLConnection = require("./MySQLConnection.js");
+var Company = require("./../model/Company.js");
 
 var databaseConnection = new MySQLConnection();
-var tableName = "CAR";
+var tableName = "COMPANY";
+var className = "CompanyData";
 
 /**
  * This data class is responsible for the connection with the database and database queries
  */
-class CarData {
+class CompanyData {
 
     /**
-     * Create a new car in the database
-     * Create car object from parameter car
-     * If query is succes, resolve the created car
-     * @param {*} car 
+     * Create a new company in the database
+     * Create company object from parameter company
+     * If query is succes, resolve the created company
+     * @param {*} company 
      */
-    static create(car) {
+    static create(company) {
         return new Promise(function (resolve, reject) {
-            CarData.handleCarQuery("INSERT INTO " + tableName + " (`id`, `name`, `color`) VALUES (NULL, ?, ?);", [car.name, car.color], "CREATE").then(function (result) {
+            CompanyData.handleQuery("INSERT INTO " + tableName + " (`id`, `name`) VALUES (NULL, ?);", [company.name], "CREATE").then(function (result) {
                 resolve(result);
+            }).catch(function (result) {
+                reject(result);
             })
-                .catch(function (result) {
-                    reject(result);
-                })
         })
 
     }
 
     /**
-     * Get all cars from the database
+     * Get all companies from the database
      */
     static getAll() {
         return new Promise(function (resolve, reject) {
-            CarData.handleCarQuery("SELECT * FROM " + tableName + ";", [], "GET").then(function (result) {
+            CompanyData.handleQuery("SELECT * FROM " + tableName + ";", [], "GET").then(function (result) {
                 resolve(result);
             }).catch(function (result) {
                 reject(result);
@@ -41,12 +41,12 @@ class CarData {
     }
 
     /**
-     * Get a car by id
+     * Get a company by id
      * @param {*} id 
      */
     static getById(id) {
         return new Promise(function (resolve, reject) {
-            CarData.handleCarQuery("SELECT * FROM " + tableName + " WHERE id = ?;", [id], "GET").then(function (result) {
+            CompanyData.handleQuery("SELECT * FROM " + tableName + " WHERE id = ?;", [id], "GET").then(function (result) {
                 if (result != null) {
                     resolve(result[0]);
                 }
@@ -57,13 +57,13 @@ class CarData {
     }
 
     /**
-     * Update a certain car in the database
-     * Create a car object from the car param and edit existing database object
-     * @param {*} car 
+     * Update a certain company in the database
+     * Create a company object from the company param and edit existing database object
+     * @param {*} company 
      */
-    static update(car) {
+    static update(company) {
         return new Promise(function (resolve, reject) {
-            CarData.handleCarQuery("UPDATE " + tableName + " SET `name`=?, `color`=? WHERE `id`=?;", [car.name, car.color, car.id], "UPDATE").then(function (result) {
+            CompanyData.handleQuery("UPDATE " + tableName + " SET `name`=? WHERE `id`=?;", [company.name, company.id], "UPDATE").then(function (result) {
                 resolve(result);
             }).catch(function (result) {
                 reject(result);
@@ -72,11 +72,11 @@ class CarData {
     }
 
     /**
-     * Remove car by id
+     * Remove company by id
      */
     static removeById(id) {
         return new Promise(function (resolve, reject) {
-            CarData.handleCarQuery("DELETE FROM " + tableName + " WHERE `id`=?;", [id], "DELETE").then(function (result) {
+            CompanyData.handleQuery("DELETE FROM " + tableName + " WHERE `id`=?;", [id], "DELETE").then(function (result) {
                 resolve(result);
             }).catch(function (result) {
                 reject(result);
@@ -88,13 +88,13 @@ class CarData {
      * Every query will be executed by this function
      * @param {*} query 
      */
-    static handleCarQuery(query, parameters, queryType) {
-        console.log("CarData: Executing query: " + query + " with parameters " + parameters);
+    static handleQuery(query, parameters, queryType) {
+        console.log(className + ": Executing query: " + query + " with parameters " + parameters);
         return new Promise(function (resolve, reject) {
             var con = databaseConnection.getConnection();
             con.query(query, parameters, function (err, result, fields) {
                 if (err) {
-                    console.log("CarData: query failed");
+                    console.log(className + ": query failed");
                     reject(err);
                     return;
                 }
@@ -104,37 +104,33 @@ class CarData {
                 }
 
                 if (queryType == "CREATE") {
-                    // return the created car
-                    var car = new Car(result.insertId, parameters[0], parameters[1]);
-                    resolve(car);
+                    // return the created company
+                    var company = new Company(result.insertId, parameters[0]);
+                    resolve(company);
                 }
 
                 if (queryType == "GET") {
-                    // create list of cars
+                    // create list of companies
                     var i;
-                    var cars = [];
+                    var companies = [];
                     for (i = 0; i < result.length; i++) {
-                        var car = new Car(result[i].id, result[i].name, result[i].color);
-                        cars.push(car);
+                        var company = new Company(result[i].id, result[i].name);
+                        companies.push(company);
                     }
-                    resolve(cars);
+                    resolve(companies);
                 }
 
                 if (queryType == "UPDATE") {
-                    resolve("car updated");
+                    resolve(tableName + " updated");
                 }
 
                 if (queryType == "DELETE") {
-                    resolve("car removed");
+                    resolve(tableName + " removed");
                 }
-
-
-
-                // this block for create queries
             });
         })
     }
 }
 
-module.exports = CarData;
+module.exports = CompanyData;
 
