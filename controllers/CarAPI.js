@@ -1,102 +1,101 @@
-var CompanyData = require("./../data/CompanyData.js");
-var Company = require("./../model/Company.js");
+var CarData = require("./../data/CarData.js");
+var Car = require("./../model/Car.js");
 var BaseAPI = require("./BaseAPI.js");
 var HttpStatus = require('http-status-codes');
 var ResponseBuilder = require("./ResponseBuilder.js");
 
-var companyData = new CompanyData();
+var carData = new CarData();
 var responseBuilder = new ResponseBuilder();
 
-class CompanyAPI {
+class CarAPI {
 
     constructor(app) {
-        this.baseUrl = BaseAPI.getUrl() + "/companies";
+        this.baseUrl = BaseAPI.getUrl() + "/cars";
         this.app = app;
         this.publishEndPoints();
     }
 
     publishEndPoints() {
-        this.createCompany();
-        this.getAllCompanies();
-        this.getCompanyById();
-        this.updateCompany();
-        this.removeCompanyById();
+        this.createCar();
+        this.getAllCars();
+        this.getCarById();
+        this.updateCar();
+        this.removeCarById();
     }
 
     /**
-     * Create a Company from request body parameters and send to CompanyData
-     * Res.end the created Company
+     * Create a car from request body parameters and send to CarData
+     * Res.end the created car
      */
-    createCompany(){
+    createCar(){
         this.app.post(this.baseUrl + '/create', function (req, res) {
-            var company = new Company(0, req.body.name);
-            console.log("CompanyAPI: Company to create " + company.name);
-            CompanyData.create(company).then(function (result) {
+            var car = new Car(0, req.body.name, req.body.color);
+            console.log("CarAPI: car to create " + car.name);
+            CarData.create(car).then(function (result) {
                 res = ResponseBuilder.createResponse(res, HttpStatus.CREATED);
                 res.end(JSON.stringify(result));
             }).catch(function(result){
-                res.end("Company could not be created");
+                res.end("car could not be created");
             })
         })
     }
 
     /**
-     * Read all Companies
-     from CompanyData
+     * Read all cars from CarData
      */
-    getAllCompanies() {
+    getAllCars() {
         this.app.get(this.baseUrl + '', function (req, res) {
-            CompanyData.getAll().then(function (result) {
+            CarData.getAll().then(function (result) {
                 res = ResponseBuilder.createResponse(res, HttpStatus.OK);
                 res.end(JSON.stringify(result));
             }).catch(function(result){
-                res.end("could not get all companies");
+                res.end("could not get all cars");
             })
         })
     }
 
     /**
-     * Find Company by Id
+     * Find car by Id
      */
-    getCompanyById() {
+    getCarById() {
         this.app.get(this.baseUrl + '/:id', function (req, res) {
-            CompanyData.getById(req.params.id).then(function (result) {
+            CarData.getById(req.params.id).then(function (result) {
                 res = ResponseBuilder.createResponse(res, HttpStatus.OK);
                 res.end(JSON.stringify(result));
             }).catch(function(result){
-                res.end("could not get company by id");
+                res.end("could not get car by id");
             })
         })
     }
 
     /**
-     * Update a Company
+     * Update a car
      */
-    updateCompany(){
+    updateCar(){
         this.app.put(this.baseUrl + '/update', function (req, res) {
-            var company = new Company(req.body.id, req.body.name);
-            CompanyData.update(company).then(function (result) {
+            var car = new Car(req.body.id, req.body.name, req.body.color);
+            CarData.update(car).then(function (result) {
                 res = ResponseBuilder.createResponse(res, HttpStatus.OK);
                 res.end(result);
             }).catch(function(result){
-                res.end("could not update company");
+                res.end("could not update car");
             })
         })
     }
 
     /**
-     * Remove a Company
+     * Remove a car
      */
-    removeCompanyById(){
+    removeCarById(){
         this.app.delete(this.baseUrl + '/remove/:id', function (req, res) {
-            CompanyData.removeById(req.params.id).then(function (result) {
+            CarData.removeById(req.params.id).then(function (result) {
                 res = ResponseBuilder.createResponse(res, HttpStatus.ACCEPTED);
                 res.end(result);
             }).catch(function(result){
-                res.end("could not remove company");
+                res.end("could not remove car");
             })
         })
     }
 }
 
-module.exports = CompanyAPI;
+module.exports = CarAPI;
